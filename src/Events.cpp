@@ -18,8 +18,7 @@ void MenuOpenCloseEventHandler::Register()
 
 RE::BSEventNotifyControl MenuOpenCloseEventHandler::ProcessEvent(const RE::MenuOpenCloseEvent* a_event, RE::BSTEventSource<RE::MenuOpenCloseEvent>*)
 {
-	auto mName = a_event->menuName;
-
+	// from ersh TrueHud pretty much verbatim
 	if (a_event) {
 		if (a_event->menuName == RE::HUDMenu::MENU_NAME) {
 			if (a_event->opening) {
@@ -30,7 +29,6 @@ RE::BSEventNotifyControl MenuOpenCloseEventHandler::ProcessEvent(const RE::MenuO
 		}
 	}
 
-	// Hide the widgets when a menu is open
 	auto controlMap = RE::ControlMap::GetSingleton();
 	if (controlMap) {
 		auto& priorityStack = controlMap->contextPriorityStack;
