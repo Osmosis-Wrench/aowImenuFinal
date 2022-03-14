@@ -1,6 +1,8 @@
 #pragma once
 
 #include "aowMenu.h"
+#include "RE/P/PlayerCharacter.h"
+#include "RE/A/Actor.h"
 
 aowMenu::aowMenu()
 {
@@ -36,12 +38,21 @@ void aowMenu::Show()
 	auto msgQ = RE::UIMessageQueue::GetSingleton();
 	if (msgQ) {
 		msgQ->AddMessage(aowMenu::MENU_NAME, RE::UI_MESSAGE_TYPE::kShow, nullptr);
-		SKSE::GetTaskInterface()->AddUITask([]() {
-			aowMenu::SetName("butts");
-			aowMenu::SetLocation(100.0f, 200.0f, 0.0f, 100.0f, 100.0f);
-		});
+			SKSE::GetTaskInterface()->AddUITask([]() {
+				auto player = RE::PlayerCharacter::GetSingleton();
+				if (player) {
+					auto power = player->selectedPower;
+					if (power) {
+						auto text = power->As<RE::SpellItem>()->fullName.c_str();
+						const RE::GFxValue newName = text;
+						aowMenu::SetName(newName);
+						aowMenu::SetLocation(100.0f, 200.0f, 0.0f, 100.0f, 100.0f);
+					}
+				}
+			});
 	}
 }
+
 
 void aowMenu::Hide()
 {
