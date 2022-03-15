@@ -8,15 +8,16 @@ static void SKSEMessageHandler(SKSE::MessagingInterface::Message* message)
 {
 	switch (message->type) {
 	case SKSE::MessagingInterface::kDataLoaded:
+		logger::info("kDataLoaded");
 		aowMenu::Register();
 		MenuOpenCloseEventHandler::Register();
 		break;
-
 	case SKSE::MessagingInterface::kNewGame:
+		logger::info("kNewGame");
 		aowMenu::Show();
 		break;
-
 	case SKSE::MessagingInterface::kPostLoadGame:
+		logger::info("kPostLoadGame");
 		aowMenu::Show();
 		break;
 	}
@@ -66,6 +67,8 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* a_s
 	logger::info("loaded plugin");
 
 	SKSE::Init(a_skse);
+
+	//while (!IsDebuggerPresent()) Sleep(100);
 
 	g_messaging = SKSE::GetMessagingInterface();
 	if (!g_messaging) {

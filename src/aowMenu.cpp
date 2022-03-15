@@ -27,43 +27,69 @@ aowMenu::aowMenu()
 
 void aowMenu::Register()
 {
+	logger::info("registering aow");
 	auto ui = RE::UI::GetSingleton();
 	if (ui) {
 		ui->Register(MENU_NAME, Creator);
-	}
+		logger::info("registered aow");
+	} else 
+		logger::info("did not register aow");
 }
 
 void aowMenu::Show()
 {
+	logger::info("showing aow");
 	auto msgQ = RE::UIMessageQueue::GetSingleton();
 	if (msgQ) {
 		msgQ->AddMessage(aowMenu::MENU_NAME, RE::UI_MESSAGE_TYPE::kShow, nullptr);
-			SKSE::GetTaskInterface()->AddUITask([]() {
-				auto player = RE::PlayerCharacter::GetSingleton();
-				if (player) {
-					auto power = player->selectedPower;
-					if (power) {
-						auto text = power->As<RE::SpellItem>()->fullName.c_str();
-						const RE::GFxValue newName = text;
-						aowMenu::SetName(newName);
-						aowMenu::SetLocation(100.0f, 200.0f, 0.0f, 100.0f, 100.0f);
-					}
+		logger::info("showed aow");
+		auto ui = RE::UI::GetSingleton();
+		if (!ui) {
+			logger::info("ui not loaded");
+		} else {
+			auto overlayMenu = ui->GetMenu(aowMenu::MENU_NAME);
+			if (!overlayMenu || !overlayMenu->uiMovie) {
+				logger::info("overlaymenu not loaded");
+			} else {
+				logger::info("menu exists");
+				const std::string_view& test = "aowMenu";
+				if (ui->IsMenuOpen(test)) {
+					logger::info("menu open");
+				} else {
+					logger::info("menu not open");
 				}
-			});
-	}
+			}
+		}
+		#if false
+		SKSE::GetTaskInterface()->AddUITask([]() {
+			auto player = RE::PlayerCharacter::GetSingleton();
+			if (player) {
+				auto power = player->selectedPower;
+				if (power) {
+					auto text = power->As<RE::SpellItem>()->fullName.c_str();
+					const RE::GFxValue newName = text;
+					aowMenu::SetName(newName);
+					aowMenu::SetLocation(100.0f, 200.0f, 0.0f, 100.0f, 100.0f);
+				}
+			}
+		});
+		#endif
+	} else
+		logger::info("failed to show aow");
 }
-
 
 void aowMenu::Hide()
 {
 	auto msgQ = RE::UIMessageQueue::GetSingleton();
 	if (msgQ) {
 		msgQ->AddMessage(aowMenu::MENU_NAME, RE::UI_MESSAGE_TYPE::kHide, nullptr);
+		logger::warn("hide");
 	}
 }
 
 void aowMenu::toggleVisibility(bool mode)
 {
+	logger::warn("trying to change visibility");
 	auto ui = RE::UI::GetSingleton();
 	if (!ui)
 		return;
@@ -73,6 +99,11 @@ void aowMenu::toggleVisibility(bool mode)
 		return;
 
 	overlayMenu->uiMovie->SetVisible(mode);
+	if (mode) {
+		logger::warn("visible true");
+	} else {
+		logger::warn("visible false");
+	}
 }
 
 // overload to allow you to set name manually

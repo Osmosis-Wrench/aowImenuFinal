@@ -22,13 +22,19 @@ RE::BSEventNotifyControl MenuOpenCloseEventHandler::ProcessEvent(const RE::MenuO
 	if (a_event) {
 		if (a_event->menuName == RE::HUDMenu::MENU_NAME) {
 			if (a_event->opening) {
+				logger::info("open {}", a_event->menuName.c_str());
 				aowMenu::Show();
 			} else {
+				logger::info("close {}", a_event->menuName.c_str());
 				aowMenu::Hide();
 			}
+		} else if (a_event->menuName == RE::RaceSexMenu::MENU_NAME && !a_event->opening) {
+			aowMenu::Show();
+			logger::info("showing menu when racemenu closes");
 		}
 	}
 
+#if false
 	auto controlMap = RE::ControlMap::GetSingleton();
 	if (controlMap) {
 		auto& priorityStack = controlMap->contextPriorityStack;
@@ -41,5 +47,6 @@ RE::BSEventNotifyControl MenuOpenCloseEventHandler::ProcessEvent(const RE::MenuO
 			aowMenu::toggleVisibility(true);
 		}
 	}
+	#endif
 	return RE::BSEventNotifyControl::kContinue;
 }
